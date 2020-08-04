@@ -1,5 +1,3 @@
-req
-install apt-get install sshpass
 # Cumulus Auto BGP Spine Leaf with Ansible
 
 ![](./images/auto_bgp.PNG)
