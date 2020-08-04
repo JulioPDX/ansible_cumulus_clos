@@ -92,7 +92,7 @@ border1
 
 ## deploy_services
 
-This role was created as a place to store common services on a node. This could be setting MOTD logins, settings hostname, syslog, ntp, etc.
+This role was created as a place to store common services on a node. This could be setting MOTD logins, setting hostname, syslog, ntp, etc.
 
 ### `roles/deploy_services/tasks/main.yaml`
 
