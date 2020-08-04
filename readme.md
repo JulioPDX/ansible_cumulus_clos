@@ -289,7 +289,7 @@ Enabling Auto BGP is as easy as running the following.
 
 `net add bgp autonomous-system leaf | spine | 1-4294967295`
 
-When automating some bgp variable to be used later, it would look something like this:
+When automating a bgp variable to be used later, it would look something like this:
 
 ```yaml
 bgp:
