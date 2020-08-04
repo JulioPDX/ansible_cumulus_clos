@@ -1,0 +1,47 @@
+hostname: spine1
+
+loopbacks:
+  loopback0: 10.0.0.1/32
+
+bgp:
+  asn: spine
+  neighbors:
+    - swp1
+    - swp2
+    - swp3
+    - swp4
+    - swp5
+    
+route_maps:
+  - name: EXCEPT_ISL_ETH0
+    redistribute: True
+    permits:
+      - name: permit 10
+        match: interface lo
+
+interfaces:
+
+  - id: swp1
+    enabled: True
+    bridge_port: False
+    ipv4:
+    
+  - id: swp2
+    enabled: True
+    bridge_port: False
+    ipv4:
+
+  - id: swp3
+    enabled: True
+    bridge_port: False
+    ipv4:
+    
+  - id: swp4
+    enabled: True
+    bridge_port: False
+    ipv4:
+
+  - id: swp5
+    enabled: True
+    bridge_port: False
+    ipv4:

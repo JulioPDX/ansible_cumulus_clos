@@ -1,0 +1,43 @@
+# This file describes the network interfaces available on your system
+# and how to activate them. For more information, see interfaces(5).
+
+source /etc/network/interfaces.d/*.intf
+
+# The loopback network interface
+auto lo
+iface lo inet loopback
+    # The primary network interface
+    address {{ loopbacks.loopback0 }}
+
+# The primary network interface
+auto eth0
+iface eth0 inet dhcp
+    vrf mgmt
+
+{% for interface in interfaces %}
+{% if interface.enabled %}
+auto {{ interface.id }}
+iface {{ interface.id }}
+{% if interface.ipv4 %}
+    address {{ interface.ipv4 }}
+    vlan-id {{ interface.vlan }}
+    vlan-raw-device bridge
+{% endif %}
+{% if interface.bridge_port %}
+    bridge-access {{ interface.vlan }}
+{% endif %}
+{% if interface.id == 'bridge' %}
+    bridge-ports {{ interface.bridge_ports }}
+    bridge-vids {{ interface.bridge_vids }}
+    bridge-vlan-aware yes
+{% endif %}
+{% endif %}
+
+{% endfor %}
+
+auto mgmt
+iface mgmt
+    address 127.0.0.1/8
+    address ::1/128
+    vrf-table auto
+

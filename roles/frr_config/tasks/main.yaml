@@ -1,0 +1,46 @@
+- name: add bgp to device
+  nclu:
+    commands:
+        - add bgp autonomous-system {{ bgp.asn }}
+    commit: true
+
+- name: running grep on show bgp to only grab current AS
+  shell: net show bgp json | grep -Eo "([42].........)"
+  register: bgp_status
+  when: bgp.asn == 'leaf' or bgp.asn == 'spine'
+
+# I am not good at regex, this took some research/trial
+# and error. If there is a better solution please let me know!
+
+- name: setting current auto BGP AS variable
+  set_fact:
+    bgp_auto: "{{ bgp_status.stdout_lines.0 }}"
+  when: bgp.asn == 'leaf' or bgp.asn == 'spine'
+
+- name: send frr config to remote
+  template:
+    src: ./templates/frr.j2
+    dest: /etc/frr/frr.conf
+
+- name: border leaf external block
+  block:
+  - name: enabling NAT dynamic
+    lineinfile:
+      path: /etc/cumulus/switchd.conf
+      regexp: '^#nat.dynamic_enable'
+      line: 'nat.dynamic_enable = TRUE'
+    register: check
+
+  - name: restart switchd for NAT
+    service:
+      name: switchd
+      state: restarted
+    when: check.changed == true
+
+  - name: NAT configurations
+    nclu:
+      commands:
+          - add nat dynamic snat icmp source-ip 172.16.0.0/12 out-interface swp3 translate 192.168.10.102-192.168.10.102
+          - add nat dynamic snat icmp source-ip 10.0.0.0/8 out-interface swp3 translate 192.168.10.102-192.168.10.102
+      commit: true
+  when: "'borders' in group_names"

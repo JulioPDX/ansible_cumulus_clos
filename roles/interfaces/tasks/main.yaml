@@ -1,0 +1,4 @@
+- name: send interfaces config to remote
+  template:
+    src: ./templates/interfaces.j2
+    dest: /etc/network/interfaces

@@ -1,0 +1,33 @@
+frr version 7.4+cl4u1
+frr defaults datacenter
+hostname {{ hostname }}
+log syslog informational
+zebra nexthop proto only
+service integrated-vtysh-config
+{% if bgp_auto is defined %}
+router bgp {{ bgp_auto }}
+{% else %}
+router bgp {{ bgp.asn }}
+{% endif %}
+ bgp router-id {{ loopbacks.loopback0 | ipv4('address') }}
+ no bgp default ipv4-unicast
+ neighbor clos peer-group
+ neighbor clos remote-as external
+{% for neighbor in bgp.neighbors %}
+ neighbor {{ neighbor }} interface peer-group clos
+{% endfor %}
+ !
+ address-family ipv4 unicast
+  neighbor clos activate
+{% for route_map in route_maps %}
+  redistribute connected route-map {{ route_map.name }}
+{% endfor %}
+ exit-address-family
+{% for route_map in route_maps %}
+{% for permit in route_map.permits %}
+route-map {{ route_map.name }} {{ permit.name }}
+ match {{ permit.match }}
+{% endfor %}
+{% endfor %}
+line vty
+

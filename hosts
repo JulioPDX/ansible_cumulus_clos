@@ -1,0 +1,28 @@
+locahost
+[network]
+spine1 ansible_host=192.168.10.91
+spine2 ansible_host=192.168.10.89
+leaf1 ansible_host=192.168.10.95
+leaf2 ansible_host=192.168.10.96
+leaf3 ansible_host=192.168.10.97
+leaf4 ansible_host=192.168.10.98
+border1 ansible_host=192.168.10.100
+
+[network:vars]
+ansible_user=cumulus
+ansible_ssh_pass=linuxlove
+ansible_sudo_pass=linuxlove
+ansible_become=yes
+
+[spines]
+spine1
+spine2
+
+[leafs]
+leaf1
+leaf2
+leaf3
+leaf4
+
+[borders]
+border1

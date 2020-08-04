@@ -1,0 +1,18 @@
+- name: deploying network
+  hosts: network
+  become: yes
+  become_method: sudo
+  pre_tasks:
+    - name: verify minimum software version
+      assert:
+        that: "{{ansible_lsb.release is version('4.2', '>=') }}"
+        msg: >
+          "Cumulus Linux version must be 4.2 or later.
+          Version {{ansible_lsb.release}} detected"
+
+
+  roles:
+    - deploy_services
+    - interfaces
+    - frr_config
+    - restart_switches

@@ -1,0 +1,30 @@
+hostname: border1
+
+loopbacks:
+  loopback0: 10.0.0.7/32
+
+bgp:
+  asn: leaf
+  neighbors:
+    - swp1
+    - swp2
+    
+route_maps:
+
+  - name: EXCEPT_ISL_ETH0
+    redistribute: True
+    permits:
+      - name: permit 10
+        match: interface lo
+
+interfaces:
+
+  - id: swp1
+    enabled: True
+    bridge_port: False
+    ipv4:
+    
+  - id: swp2
+    enabled: True
+    bridge_port: False
+    ipv4:

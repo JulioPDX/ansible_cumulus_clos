@@ -1,0 +1,20 @@
+- name: Write the Hostname to File
+  shell: echo "{{ inventory_hostname }}" > /etc/hostname
+
+- name: Apply Hostname
+  shell: hostname -F /etc/hostname
+
+- name: Add Local DNS Resolution for our Hostname
+  lineinfile: dest=/etc/hosts line="127.0.1.1    {{inventory_hostname}}" regexp=^.*127.0.1.1
+
+- name: Configure MOTD
+  copy: src=./files/motd dest=/etc/motd
+
+- name: Configure Login Warning Message (Banner)
+  copy: src=./files/banner dest=/etc/issue.net
+
+- name: Enable Usage of Banner by SSH
+  lineinfile: dest=/etc/ssh/sshd_config line="Banner /etc/issue.net" regexp=^.*Banner
+
+- name: Restart SSH Daemon
+  service: name=ssh state=restarted

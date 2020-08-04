@@ -1,0 +1,53 @@
+hostname: leaf4
+
+loopbacks:
+  loopback0: 10.0.0.6/32
+
+bgp:
+  asn: 65444
+  neighbors:
+    - swp1
+    - swp2
+    
+route_maps:
+
+  - name: EXCEPT_ISL_ETH0
+    redistribute: True
+    permits:
+      - name: permit 10
+        match: interface lo
+      - name: permit 20
+        match: interface vlan40
+
+interfaces:
+
+  - id: swp1
+    enabled: True
+    bridge_port: False
+    ipv4:
+    
+  - id: swp2
+    enabled: True
+    bridge_port: False
+    ipv4:
+
+  - id: swp3
+    enabled: True
+    bridge_port: True
+    ipv4:
+    vlan: 40
+    
+  - id: vlan40
+    enabled: True
+    bridge_port: False
+    port: swp3
+    vlan: 40
+    ipv4: 172.16.40.1/24
+    bridge_vid: True
+   
+  - id: bridge
+    enabled: True
+    bridge_ports: swp3
+    bridge_vids: 40
+    bridge_port: False
+    ipv4:
