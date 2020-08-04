@@ -4,7 +4,7 @@
 
 ## Purpose
 
-This project stemmed from my curiosity with Cumulus Linux. Cumulus is an open source network OS. Being linux, this OS opens itself up to using automation procedures that have been around for much longer than our traditional networking devices. This makes Cumulus pair well with Ansible. 
+This project stemmed from my curiosity with Cumulus Linux which is an open source network OS. Being linux, this OS opens itself up to using automation procedures that have been around for much longer than our traditional networking devices. This makes Cumulus pair well with Ansible. 
 
 The roots of Ansible started with server administration/automation. This repo takes a lot of inspiration from the book [Cloud Native Data Center](https://cumulusnetworks.com/lp/cloud-native-data-center-networking/) by Dinesh Dutt. I highly recommend you read his book and check out the associated [git repo](https://github.com/ddutt/cloud-native-data-center-networking). This deployment will utilize Auto BGP, BGP unnumbered, and a spine leaf architecture.
 
@@ -92,15 +92,13 @@ border1
 
 ## deploy_services
 
-This role was created as a place to store common services on a node. This could be setting MOTD logins, settings hostname, syslog, ntp, etc...
-
-No credit to me on these playbooks, I cannot find the c
+This role was created as a place to store common services on a node. This could be setting MOTD logins, settings hostname, syslog, ntp, etc.
 
 ### `roles/deploy_services/tasks/main.yaml`
 
 Credit to the folks at Cumulus for these snippets, check them out at https://github.com/CumulusNetworks/ansible_snippets
 
-Please note, a few of these are fairly old and the file placements may have changed since then. 
+Please note, a few of these are fairly old and the file placements may have changed.
 
 ```yaml
 --snip--
@@ -234,7 +232,7 @@ interfaces:
     ipv4:
 ```
 
-Both of these combined will render the following file...
+Both of these combined will render the following file:
 
 ```
 # This file describes the network interfaces available on your system
@@ -285,13 +283,13 @@ iface mgmt
 
 ## frr_config
 
-This role has a few interesting aspects to it. We will be using a new nerd knob that cumulus linux has added to version 4.2, Auto BGP! Auto BGP simplifies the use of BGP by automatically assigning the AS within 4200000000-4294967294. This private range is defined in [RFC 6996](https://tools.ietf.org/html/rfc6996). The AS is assigned by using a hash of your switch MAC. Each spine will be assigned AS 4200000000.
+This role has a few interesting aspects to it. We will be using a new nerd knob that Cumulus Linux has added to version 4.2, Auto BGP! Auto BGP simplifies the use of BGP by automatically assigning the AS within 4200000000-4294967294. This private range is defined in [RFC 6996](https://tools.ietf.org/html/rfc6996). The AS is assigned by using a hash of your switch MAC. Each spine will be assigned AS 4200000000.
 
 Enabling Auto BGP is as easy as running the following.
 
 `net add bgp autonomous-system leaf | spine | 1-4294967295`
 
-When automating some bgp variable to be used later, it would look something like this.
+When automating some bgp variable to be used later, it would look something like this:
 
 ```yaml
 bgp:
@@ -327,7 +325,7 @@ This playbook will use the [nclu](https://docs.ansible.com/ansible/latest/module
 
 Here is the next oddity... how do we grab the new dynamically assigned AS?
 
-Well this wasnt too bad with a little trial and error. We use a traditional Ansiblism... `register` and then `set_fact` :)
+This wasnt too bad with a little trial and error. We use a traditional Ansiblism... `register` and then `set_fact` :)
 
 We will use the shell module to get the bgp output and grep for what we need. `grep -Eo "([42].........)"`, -Eo will enable extended grep and match only what we want vs what is on the line. I know this is kind of a hack but if there is something easier, please let me know. The end just matches on 42 and then however many digits after. We know from the range that the digit count will always be the same.
 
