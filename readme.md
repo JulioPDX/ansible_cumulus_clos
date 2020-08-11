@@ -118,7 +118,7 @@ Please note, a few of these are fairly old and the file placements may have chan
 
 ### `roles/interfaces/tasks/main.yaml`
 
-This role will enable the required interfaces, set VLANs, and SVIs. Since we are using BGP unnumbered, the only IP address we need to define to establish neighbors is the loopback0 interface. BGP unnumbered will borrow the loopback IP when establishing neighbors. This greatly reduces the amount of IP addresses to use.
+This role will enable the required interfaces, set VLANs, and SVIs. Since we are using BGP unnumbered, the only IP address we need to define to establish neighbors is the loopback0 interface. BGP unnumbered will use the interfaces IPv6 link-local address and IPv6 RA (learn peers address) to establish neighbors. This greatly reduces the amount of IP addresses to use. To learn more about advertising IPv4 NLRI (network layer reachability information) with IPv6, please check out [RFC 5549](https://tools.ietf.org/html/rfc5549).
 
 ```yaml
 - name: send interfaces config to remote
